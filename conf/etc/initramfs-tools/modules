@@ -9,7 +9,3 @@
 #
 # raid1
 # sd_mod
-
-#pci_stub ids=10de:0dd8,10de:0be9
-#pci_stub ids=10de:1380,10de:0fbc # GTX 750
-#nouveau
