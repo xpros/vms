@@ -8,5 +8,4 @@ vfio
 vfio_iommu_type1
 vfio_pci
 kvm
-kvm_intel
 #nouveau
