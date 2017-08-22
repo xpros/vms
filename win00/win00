@@ -1,31 +1,30 @@
 #!/bin/bash
 
-configfile=/wrk/vms/win00/conf/vfio-pci.conf
-
-vfiobind() {
-    dev="$1"
-        vendor=$(cat /sys/bus/pci/devices/$dev/vendor)
-        device=$(cat /sys/bus/pci/devices/$dev/device)
-        if [ -e /sys/bus/pci/devices/$dev/driver ]; then
-                echo $dev > /sys/bus/pci/devices/$dev/driver/unbind
-        fi
-        echo $vendor $device > /sys/bus/pci/drivers/vfio-pci/new_id
-
-}
-
-modprobe vfio-pci
-
-cat $configfile | while read line;do
-    echo $line | grep ^# >/dev/null 2>&1 && continue
-        vfiobind $line
-done
+#configfile=/wrk/vms/win00/conf/vfio-pci.conf
+#
+#vfiobind() {
+#    dev="$1"
+#        vendor=$(cat /sys/bus/pci/devices/$dev/vendor)
+#        device=$(cat /sys/bus/pci/devices/$dev/device)
+#        if [ -e /sys/bus/pci/devices/$dev/driver ]; then
+#                echo $dev > /sys/bus/pci/devices/$dev/driver/unbind
+#        fi
+#        echo $vendor $device > /sys/bus/pci/drivers/vfio-pci/new_id
+#
+#}
+#
+#modprobe vfio-pci
+#
+#cat $configfile | while read line;do
+#    echo $line | grep ^# >/dev/null 2>&1 && continue
+#        vfiobind $line
+#done
 
 sudo qemu-system-x86_64 -enable-kvm -M q35 -m 8192 -cpu host \
+-vga std \
 -alt-grab \
 -no-quit \
 -smp 4,sockets=1,cores=4,threads=1 \
--device vfio-pci,host=0f:00.0,multifunction=on,x-vga=on,rombar=0 \
--device vfio-pci,host=0f:00.1,bus=pcie.0 \
 -drive if=pflash,format=raw,readonly,file=/wrk/vms/win00/ovmf/OVMF_CODE.fd \
 -drive if=pflash,format=raw,file=/wrk/vms/win00/ovmf/OVMF_VARS.fd \
 -drive file=/wrk/vms/win00/disk/vm00-win00.internal.matthassel.com,index=0,media=disk,format=raw,if=virtio \
